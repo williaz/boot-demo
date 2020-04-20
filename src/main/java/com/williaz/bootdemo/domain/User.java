@@ -19,6 +19,7 @@ public class User implements UserDetails {  // implements UserDetails
     private Long id;
     private String username;
     private String password;
+    private String role; // list later
 
     public User() { // JPA requires that entities have a noargument constructor
     }
@@ -61,7 +62,7 @@ public class User implements UserDetails {  // implements UserDetails
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Arrays.asList(new SimpleGrantedAuthority(getRole()));
     }
 
     public String getPassword() {
@@ -72,4 +73,14 @@ public class User implements UserDetails {  // implements UserDetails
         this.password = password;
     }
     // embedded address
+
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
 }

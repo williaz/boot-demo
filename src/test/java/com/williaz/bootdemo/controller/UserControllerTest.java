@@ -1,5 +1,6 @@
 package com.williaz.bootdemo.controller;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,6 +41,7 @@ class UserControllerTest {
     @Test
     @WithUserDetails("Will")
     void getByUserame() throws Exception{
+
         String name = "Leo";
         mockMvc.perform(MockMvcRequestBuilders.get("/user/name/"+ name))
                 .andExpect(status().isOk())
@@ -47,9 +50,17 @@ class UserControllerTest {
     }
 
     @Test
-    void getByUserameWithoutAuthExpect401() throws Exception{
+    void getByUsernameWithoutAuthExpect401() throws Exception{
         String name = "Leo";
         mockMvc.perform(MockMvcRequestBuilders.get("/user/name/"+ name))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithUserDetails("Arby")
+    void getByUsernameWithoutAccessExpect403() throws Exception{
+        String name = "Leo";
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/name/"+ name))
+                .andExpect(status().isForbidden());
     }
 }
