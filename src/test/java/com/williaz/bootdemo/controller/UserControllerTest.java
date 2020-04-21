@@ -34,19 +34,34 @@ class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/user/all"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$").isArray());
     }
 
     @Test
-    @WithUserDetails("Will")
-    void getByUserame() throws Exception{
+    @WithUserDetails("Leo")
+    void getAllUsersWithUserRoleExpect403() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/all"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithUserDetails("Leo")
+    void getByUserameForSelf() throws Exception{
 
         String name = "Leo";
         mockMvc.perform(MockMvcRequestBuilders.get("/user/name/"+ name))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.username").value(name));
+    }
+
+    @Test
+    @WithUserDetails("Will")
+    void getByUserameForOtherExpectPostAuthRej() throws Exception{
+
+        String name = "Leo";
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/name/"+ name))
+                .andExpect(status().isForbidden());
     }
 
     @Test
