@@ -20,15 +20,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_AUDIT"})
+
     @GetMapping("all")
     Iterable<User> getAllUsers() {
         return userService.findAll();
     }
 
-    @Secured({"ROLE_ADMIN", "Role_USER"})
-//    @PreAuthorize("hasRole('Role_USER') or hasRole('ROLE_ADMIN')") // TODO unexpected
-    @PostAuthorize("returnObject.username == principal.username") // only show self
+
     @GetMapping("name/{username}")
     User getByUserame(@PathVariable String username) {
         return userService.findByUsername(username);
